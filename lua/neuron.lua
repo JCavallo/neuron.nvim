@@ -66,18 +66,20 @@ function M.enter_link()
 
   cmd.query_id(id, config.neuron_dir, function(json)
     if type(json) ~= "userdata" then
-      vim.cmd(string.format("edit %s", Path:new(config.neuron_dir, json.Path):absolute()))
+      vim.cmd(string.format("edit %s", Path:new(config.neuron_dir, json.result.zettelPath):absolute()))
     end
   end)
 end
 
 function M.add_all_virtual_titles(buf)
+  buf = 0
   for ln, line in ipairs(api.nvim_buf_get_lines(buf, 0, -1, true)) do
     M.add_virtual_title_current_line(buf, ln, line)
   end
 end
 
 function M.add_virtual_title_current_line(buf, ln, line)
+  buf = 0
   if type(line) ~= "string" then
     return
   end
@@ -101,7 +103,7 @@ function M.add_virtual_title_current_line(buf, ln, line)
     --   utils.delete_range_extmark(buf, ns, ln - 1, ln)
     --   return
     -- end
-    local title = json.Title
+    local title = json.result.zettelTitle
     -- lua is one indexed
     api.nvim_buf_set_extmark(buf, ns, ln - 1, start_col - 1, {
       end_col = end_col,
@@ -111,6 +113,7 @@ function M.add_virtual_title_current_line(buf, ln, line)
 end
 
 function M.update_virtual_titles(buf)
+  buf = 0
   api.nvim_buf_clear_namespace(buf, ns, 0, -1)
   M.add_all_virtual_titles()
 end
